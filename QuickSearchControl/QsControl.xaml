@@ -1,0 +1,24 @@
+<UserControl x:Class="QuickSearchControl.QsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:QuickSearchControl"
+             mc:Ignorable="d" 
+             >
+    <DockPanel LostFocus="OnLostFocus">
+        <TextBox Name="FilterTextBox" Height="25" DockPanel.Dock="Top" TextChanged="OnFilterTextChanged" GotFocus="OnFocus" FontSize="14"></TextBox>
+        <ListView Name="ResultsView" DockPanel.Dock="Bottom">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Command: "></TextBlock>
+                        <TextBlock Text="{Binding Text}" Width="150"></TextBlock>
+                        <TextBlock Text="Description: "></TextBlock>
+                        <TextBlock Text="{Binding Description}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DockPanel>
+</UserControl>
