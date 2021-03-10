@@ -45,6 +45,7 @@ namespace QuickSearchControl
         private void OnFocus(object sender, RoutedEventArgs e)
         {
             ResultsView.ItemsSource = ItemsSource;
+            ResultsView.Visibility = Visibility.Visible;
         }
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
@@ -71,6 +72,7 @@ namespace QuickSearchControl
         {
             var item = ResultsView.SelectedItem as IResultItem;
             if (item != null) MessageBox.Show($"Run macro for :{item.Text}");
+            ResultsView.Visibility = Visibility.Collapsed;
             FilterTextBox.Text = "";
         }
 

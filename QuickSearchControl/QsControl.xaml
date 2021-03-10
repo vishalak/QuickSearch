@@ -8,7 +8,7 @@
              >
     <DockPanel LostFocus="OnLostFocus">
         <TextBox Name="FilterTextBox" Height="25" DockPanel.Dock="Top" TextChanged="OnFilterTextChanged" GotFocus="OnFocus" KeyUp="FilterTextBox_KeyUp" FontSize="14"></TextBox>
-        <ListView Name="ResultsView" DockPanel.Dock="Bottom" KeyUp="ResultsView_KeyUp" MouseLeftButtonUp="ResultsView_MouseLeftButtonUp">
+        <ListView Name="ResultsView" DockPanel.Dock="Bottom" KeyUp="ResultsView_KeyUp" MouseLeftButtonUp="ResultsView_MouseLeftButtonUp" Visibility="Collapsed">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
