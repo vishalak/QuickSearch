@@ -52,17 +52,38 @@ namespace QuickSearchControl
             //ResultsView.Items.Clear();
         }
 
-        private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void FilterTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Down)
+
+            if (e.Key == Key.Down && ResultsView.Items?.Count > 0)
             {
+                ResultsView.SelectedIndex = 0;
                 ResultsView.Focus();
             }
         }
 
-        private void ResultsView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ResultsView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(ResultsView.SelectedItem.ToString());
+            ExecuteCommand();
+        }
+
+        private void ExecuteCommand()
+        {
+            var item = ResultsView.SelectedItem as IResultItem;
+            if (item != null) MessageBox.Show($"Run macro for :{item.Text}");
+            FilterTextBox.Text = "";
+        }
+
+        private void ResultsView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ExecuteCommand();
+            }
+            else if  (e.Key == Key.Up && ResultsView.SelectedIndex == 0)
+            {
+                FilterTextBox.Focus();
+            }
         }
     }
 
