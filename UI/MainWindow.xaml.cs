@@ -11,7 +11,8 @@ namespace QuickSearch
         public MainWindow()
         {
             InitializeComponent();
-            MyControl.Init();
+            var filePath = "C:\\temp\\commands.txt";
+            MyControl.Init(filePath);
         }
     }
 }

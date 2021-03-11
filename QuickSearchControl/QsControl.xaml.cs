@@ -69,10 +69,11 @@ namespace QuickSearchControl
         private void ExecuteCommand()
         {
             SelectedItem= ResultsView.SelectedItem as IResultItem;
+            if (SelectedItem == null) return;
             ResultsView.Visibility = Visibility.Collapsed;
             CommandText = SelectedItem.CommandText;
-            RaisePropertyChanged("SelectedItem");
             FilterText = string.Empty;
+            ResultsView.SelectedItems.Clear();
         }
 
         private void ResultsView_KeyUp(object sender, KeyEventArgs e)
@@ -88,7 +89,7 @@ namespace QuickSearchControl
         }
 
         public string CommandText { get; private set; }
-        public IResultItem SelectedItem { get; private set; }
+        public IResultItem SelectedItem { get; set; }
 
         public string FilterText { 
             get { return filterText; }

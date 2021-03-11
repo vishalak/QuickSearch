@@ -16,11 +16,16 @@ namespace QuickSearchControl
         {
             return new ObservableCollection<IResultItem>()
             {
-                new QueryResultItem(){Text="Project Toolbar", Description="Show or hide the Project Tools toolbar", CommandText="tsm project tools"},
-                new QueryResultItem(){Text="Project Settings", Description="Edit the timing parameters, input files, and output selection that define a project", CommandText="tsm project settings"},
-                new QueryResultItem(){Text="Scenario Manager", Description="Manage scenarios and files", CommandText="G30 Toggle Project Settings"},
-                new QueryResultItem(){Text="Parking Toolbar", Description="Show or hide the Parking toolbar", CommandText="tsm parking toolbox"},
-                new QueryResultItem(){Text="Turn Prohibition Editor", Description="Show or hide the Turn Prohibition Editor", CommandText="Toggle G60 Turn Prohibition Editor"}
+                new QueryResultItem(){Text="Project Toolbar", Description="Show or hide the Project Tools toolbar", 
+                    CommandText="tsm project tools", Category="macro"},
+                new QueryResultItem(){Text="Project Settings", Description="Edit the timing parameters, input files, and output selection that define a project", 
+                    CommandText="tsm project settings", Category="dbox"},
+                new QueryResultItem(){Text="Scenario Manager", Description="Manage scenarios and files", 
+                    CommandText="G30 Toggle Project Settings", Category="macro"},
+                new QueryResultItem(){Text="Parking Toolbar", Description="Show or hide the Parking toolbar", 
+                    CommandText="tsm parking toolbox", Category="macro"},
+                new QueryResultItem(){Text="Turn Prohibition Editor", Description="Show or hide the Turn Prohibition Editor", 
+                    CommandText="Toggle G60 Turn Prohibition Editor", Category="macro"}
             };
         }
 
@@ -31,8 +36,50 @@ namespace QuickSearchControl
                 var collection = new ObservableCollection<IResultItem>();
                 if (!File.Exists(filePath))
                 {
-                    MessageBox.Show("Items source for the available commands has not been set. Filling it with dummy data.");
+                    MessageBox.Show("Either no file has been specified or the specified file does not exist. " +
+                        "Items source for the available commands could not be set from file. Filling it with dummy data.", caption:"No settings file");
                     collection = GetDummyData();
+                }
+                else
+                {
+                    var lines = File.ReadAllLines(filePath);
+                    //skip line 1, assuming its header
+                    for (var i=1; i<lines.Length; i++)
+                    {
+                        //parse the line contents and add the resulting item to the collection
+                        var items = lines[i].Split(';');
+                        var qri = new QueryResultItem();
+                        for(var j = 0; j<items.Length; j++)
+                        {
+                            var item = items[j].Trim();
+                            switch (j)
+                            {
+                                case 0: 
+                                    qri.Text = item;
+                                    break;
+                                case 1:
+                                    qri.Description = item;
+                                    break;
+                                case 2:
+                                    qri.CommandText = item;
+                                    break;
+                                case 3:
+                                    qri.Category = item.ToLower();
+                                    break;
+                                case 4:
+                                    qri.KeyboardShortcut = item;
+                                    break;
+                                case 5:
+                                    qri.ImagePath = item;
+                                    break;
+                                case 6:
+                                    qri.DisplayText = item;
+                                    break;
+
+                            }
+                        }
+                        collection.Add(qri);
+                    }
                 }
 
                 return collection;
@@ -41,29 +88,6 @@ namespace QuickSearchControl
             {
                 Debug.WriteLine(exception.Message);
                 throw;
-            }
-        }
-    }
-
-    public class QueryResultItem : IResultItem
-    {
-        public string Text { get; set; }
-        public string Description { get; set; }
-        public string CommandText { get; set; }
-        public string Category { get; set; }
-        public string KeyboardShortcut { get; set; }
-        public string ImagePath { get; set; }
-        
-        private string displayText;
-        public string DisplayText
-        {
-            get
-            {
-                return $"{Text} - {Description}\t{KeyboardShortcut?.ToString()}";
-            }
-            set
-            {
-                displayText = value;              
             }
         }
     }
