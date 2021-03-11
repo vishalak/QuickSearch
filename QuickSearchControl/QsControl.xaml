@@ -4,18 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:QuickSearchControl"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              >
-    <DockPanel LostFocus="OnLostFocus">
-        <TextBox Name="FilterTextBox" Height="25" DockPanel.Dock="Top" TextChanged="OnFilterTextChanged" GotFocus="OnFocus" KeyUp="FilterTextBox_KeyUp" FontSize="14"></TextBox>
-        <ListView Name="ResultsView" DockPanel.Dock="Bottom" KeyUp="ResultsView_KeyUp" MouseLeftButtonUp="ResultsView_MouseLeftButtonUp" Visibility="Collapsed">
+    <DockPanel>
+        <TextBox Name="FilterTextBox" Height="25" DockPanel.Dock="Top" GotFocus="OnFocus" FontSize="14" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" KeyUp="FilterTextBox_KeyUp" ></TextBox>
+        <ListView Name="ResultsView" DockPanel.Dock="Bottom" KeyUp="ResultsView_KeyUp" MouseLeftButtonUp="ResultsView_MouseLeftButtonUp"  Visibility="Collapsed">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Command: "></TextBlock>
-                        <TextBlock Text="{Binding Text}" Width="150"></TextBlock>
-                        <TextBlock Text="Description: "></TextBlock>
-                        <TextBlock Text="{Binding Description}"></TextBlock>
+                        <TextBlock Text="{Binding DisplayText}"></TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

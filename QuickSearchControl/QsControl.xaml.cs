@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,13 +11,18 @@ namespace QuickSearchControl
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class QsControl : UserControl
+    public partial class QsControl : UserControl, INotifyPropertyChanged
     {
+        private string filterText;
+
         private ObservableCollection<IResultItem> ItemsSource { get; set; }
         public QsControl()
         {
             InitializeComponent();
+            DataContext = this;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool UseFilter(object obj)
         {
@@ -30,32 +37,23 @@ namespace QuickSearchControl
             return result;
         }
 
-        private void OnFilterTextChanged(object sender, TextChangedEventArgs args)
+        private void OnFocus(object sender, RoutedEventArgs e)
         {
-            CollectionViewSource.GetDefaultView(ResultsView.ItemsSource).Refresh();
+            CommandText = null;
+            ResultsView.Visibility = Visibility.Visible;
         }
 
-        public void SetItemSource(ObservableCollection<IResultItem> collection)
+        public void Init(string filePath = null)
         {
-            ItemsSource = collection;
+            ItemsSource = DataProvider.GetDataFromFile(filePath);
+            CommandText = null;
+            ResultsView.ItemsSource = ItemsSource;
             var view = CollectionViewSource.GetDefaultView(ItemsSource) as CollectionView;
             view.Filter = UseFilter;
         }
 
-        private void OnFocus(object sender, RoutedEventArgs e)
-        {
-            ResultsView.ItemsSource = ItemsSource;
-            ResultsView.Visibility = Visibility.Visible;
-        }
-
-        private void OnLostFocus(object sender, RoutedEventArgs e)
-        {
-            //ResultsView.Items.Clear();
-        }
-
         private void FilterTextBox_KeyUp(object sender, KeyEventArgs e)
         {
-
             if (e.Key == Key.Down && ResultsView.Items?.Count > 0)
             {
                 ResultsView.SelectedIndex = 0;
@@ -70,10 +68,11 @@ namespace QuickSearchControl
 
         private void ExecuteCommand()
         {
-            var item = ResultsView.SelectedItem as IResultItem;
-            if (item != null) MessageBox.Show($"Run macro for :{item.Text}");
+            SelectedItem= ResultsView.SelectedItem as IResultItem;
             ResultsView.Visibility = Visibility.Collapsed;
-            FilterTextBox.Text = "";
+            CommandText = SelectedItem.CommandText;
+            RaisePropertyChanged("SelectedItem");
+            FilterText = string.Empty;
         }
 
         private void ResultsView_KeyUp(object sender, KeyEventArgs e)
@@ -87,11 +86,41 @@ namespace QuickSearchControl
                 FilterTextBox.Focus();
             }
         }
+
+        public string CommandText { get; private set; }
+        public IResultItem SelectedItem { get; private set; }
+
+        public string FilterText { 
+            get { return filterText; }
+            set 
+            { 
+                filterText = value;
+                RaisePropertyChanged("FilterText");
+                if (ItemsSource != null && ItemsSource.Count > 0)
+                {
+                    CollectionViewSource.GetDefaultView(ItemsSource).Refresh();
+                }
+            }
+        }
+
+        public void RaisePropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
     }
 
     public interface IResultItem
     {
         string Text { get; set; }
         string Description { get; set; }
+        string CommandText { get; set; }
+        string Category { get; set; }
+        string KeyboardShortcut { get; set; }
+        string ImagePath { get; set; }
+        string DisplayText { get; set; }
     }
 }

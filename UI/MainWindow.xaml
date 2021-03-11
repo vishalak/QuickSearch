@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QuickSearch" xmlns:quicksearchcontrol="clr-namespace:QuickSearchControl;assembly=QuickSearchControl"
         mc:Ignorable="d"
-        Title="MainWindow" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight">
+        Title="Quick Search" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow" MinWidth="600">
     <Grid>
         <StackPanel>
             <quicksearchcontrol:QsControl Name="MyControl"></quicksearchcontrol:QsControl>
